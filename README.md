@@ -48,7 +48,13 @@ dotnet --version
 git clone </natalia-0509/parserAPI>
 ```
 
-2. Uruchom aplikację:
+2. Zbuduj aplikację:
+
+```bash
+dotnet restore
+```
+
+3. Uruchom aplikację:
 
 ```bash
 dotnet run
