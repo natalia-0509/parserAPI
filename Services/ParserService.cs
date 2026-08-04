@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace parserAPI.Services
 {
-    public class Base64Decoder : IBase64Decoder
+    public class Base64Decoder : IBase64DecoderInterface
     {
         public string Decode(string base64)
         {
@@ -22,8 +22,8 @@ namespace parserAPI.Services
     }
     public class ParserService : IParserInterface
     {
-        private readonly IBase64Decoder _decoder;
-        public ParserService(IBase64Decoder decoder)
+        private readonly IBase64DecoderInterface _decoder;
+        public ParserService(IBase64DecoderInterface decoder)
         {
             _decoder = decoder;
         }
@@ -40,9 +40,9 @@ namespace parserAPI.Services
         }
         private ParserResponse ParseCSV(string csv)
         {
-            var lines = csv.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+            var lines = csv.Split("\n", StringSplitOptions.RemoveEmptyEntries);
 
-            if (lines.Length < 2)
+            if (lines.Length == 0)
             {
                 throw new Exception("CSV content too short to parse.");
             }
@@ -57,7 +57,14 @@ namespace parserAPI.Services
                 var item = new ParsedItem();
                 for (int i = 0; i < headers.Length; i++)
                 {
-                    item.Values[headers[i]] = values.Length > i ? values[i] : null;
+                    if (values.Length > i)
+                    {
+                        item.Values[headers[i]] = values[i];
+                    }
+                    else
+                    {
+                        item.Values[headers[i]] = null;
+                    }
                 }
                 response.Items.Add(item);
             }
@@ -76,10 +83,7 @@ namespace parserAPI.Services
             {
                 throw new Exception("Invalid JSON format.");
             }
-            var response = new ParserResponse
-            {
-                status = "success",
-            };
+            var response = new ParserResponse();
             if (document.RootElement.ValueKind == JsonValueKind.Array)
             {
 
@@ -104,6 +108,7 @@ namespace parserAPI.Services
                 }
                 response.Items.Add(item);
             }
+            response.status = "success";
             response.Count = response.Items.Count;
             return response;
 

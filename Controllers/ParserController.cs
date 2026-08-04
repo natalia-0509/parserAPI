@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using parserAPI.Interfaces;
 using parserAPI.Models;
-using parserAPI.Services;
-
 
 namespace parserAPI.Controllers
 {
