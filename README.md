@@ -90,7 +90,7 @@ Swagger umożliwia testowanie endpointów bez używania zewnętrznych narzędzi.
 
 ### POST
 
-```
+``` 
 /api/v1/parse-content
 ```
 
